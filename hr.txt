@@ -1,0 +1,53 @@
+-- Active: 1710767063764@@127.0.0.1@3306@hr
+USE HR;
+
+-- TABEL KARYAWAN
+CREATE TABLE karyawan (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nama VARCHAR(100) NOT NULL,
+    tgl_lahir DATE NOT NULL,
+    gaji DECIMAL(15, 2) NOT NULL
+);
+
+INSERT INTO karyawan (nama, tgl_lahir, gaji)
+VALUES 
+('Budi Santoso', '1990-05-10', 5000000.00),
+('Siti Aminah', '1985-11-20', 6000000.00);
+
+-- Tabel TLOG
+CREATE TABLE tlog (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tanggal DATE NOT NULL,
+    jam TIME NOT NULL,
+    keterangan TEXT
+);
+
+INSERT INTO tlog (tanggal, jam, keterangan)
+VALUES 
+(CURRENT_DATE, CURRENT_TIME, 'Log pertama dimasukkan untuk testing insert data'),
+(CURRENT_DATE, CURRENT_TIME, 'Log kedua dimasukkan untuk testing insert data');
+
+
+CREATE TRIGGER tlog_karyawan_insert
+AFTER INSERT ON karyawan
+FOR EACH ROW
+BEGIN
+    INSERT INTO tlog (tanggal, jam, keterangan)
+    VALUES (CURRENT_DATE, CURRENT_TIME, CONCAT('Data karyawan ditambahkan. ID: ', NEW.id, ', Nama: ', NEW.nama));
+END;
+
+CREATE TRIGGER tlog_karyawan_update
+AFTER UPDATE ON karyawan
+FOR EACH ROW
+BEGIN
+    INSERT INTO tlog (tanggal, jam, keterangan)
+    VALUES (CURRENT_DATE, CURRENT_TIME, CONCAT('Data karyawan diperbarui. ID: ', NEW.id, ', Nama: ', NEW.nama));
+END;
+
+CREATE TRIGGER tlog_karyawan_delete
+AFTER DELETE ON karyawan
+FOR EACH ROW
+BEGIN
+    INSERT INTO tlog (tanggal, jam, keterangan)
+    VALUES (CURRENT_DATE, CURRENT_TIME, CONCAT('Data karyawan dihapus. ID: ', OLD.id, ', Nama: ', OLD.nama));
+END;
