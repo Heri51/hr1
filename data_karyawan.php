@@ -1,7 +1,7 @@
 
 <?php
 include 'akses/koneksi.php';
-if (!isset($_SESSION['user'])) {
+if (!isset($_SESSION['users'])) {
 	echo "<script>document.location.href='login.php'</script>";
 }
 ?>
